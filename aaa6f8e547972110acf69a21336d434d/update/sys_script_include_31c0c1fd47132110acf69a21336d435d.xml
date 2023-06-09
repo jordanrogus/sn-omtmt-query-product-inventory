@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_648117_omtmt_qry.QueryProductInventoryUtils</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description/>
+        <name>QueryProductInventoryUtils</name>
+        <script><![CDATA[var QueryProductInventoryUtils = Class.create();
+QueryProductInventoryUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+
+    retrieveInventoryInfo: function() {
+
+        var characteristic = this.getParameter('sysparm_characteristic_sys_id');
+        var searchvalue = this.getParameter('sysparm_searchvalue').trim();
+        var account = this.getParameter('sysparm_account_sys_id');
+
+        var results = [];
+
+        var grProductInventoryChars = new GlideRecordSecure('sn_prd_invt_product_characteristics');
+        if (account) {
+            grProductInventoryChars.addQuery('sold_product.account', account);
+        }
+        if (characteristic) {
+            grProductInventoryChars.addQuery('characteristic', characteristic);
+        }
+        grProductInventoryChars.addQuery('characteristic_value', searchvalue);
+        grProductInventoryChars.query();
+        while (grProductInventoryChars.next()) {
+
+            var grProductInventory = new GlideRecordSecure('sn_prd_invt_product_inventory');
+            if (grProductInventory.get(grProductInventoryChars.getValue('sold_product'))) {
+
+                var specClass = '';
+                switch (grProductInventory.specification.sys_class_name.toString()) {
+                    case 'sn_prd_pm_product_specification':
+                        specClass = 'Product';
+                        break;
+                    case 'sn_prd_pm_service_specification':
+                        specClass = 'Service';
+                        break;
+                    case 'sn_prd_pm_resource_specification':
+                        specClass = 'Resource';
+                        break;
+                }
+
+                var obj = {
+                    "name": grProductInventory.getValue('name'),
+                    "specification": grProductInventory.getDisplayValue('specification'),
+                    "specification_class": specClass,
+                    "state": grProductInventory.getDisplayValue('state'),
+                    "location": grProductInventory.getDisplayValue('sn_prd_invt_location'),
+                    "account": grProductInventory.getDisplayValue('account'),
+                    "product_offering": grProductInventory.getDisplayValue('prd_offering'),
+                    "model": grProductInventory.getDisplayValue('product'),
+                    "sys_id": grProductInventory.getValue('sys_id'),
+                    "link": gs.getProperty('glide.servlet.uri') + grProductInventory.getLink(false)
+                };
+
+                results.push(obj);
+            }
+        }
+
+        return JSON.stringify(results);
+    },
+
+    updateCase: function() {
+
+        var caseRecord = this.getParameter('sysparm_case_record_sys_id');
+        var inventoryRecord = this.getParameter('sysparm_inventory_sys_id');
+
+        var grCase = new GlideRecordSecure('sn_customerservice_case');
+        if (grCase.get(caseRecord)) {
+            grCase.setValue('sold_product', inventoryRecord);
+            grCase.update();
+        }
+        return;
+    },
+
+    type: 'QueryProductInventoryUtils'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-08 16:44:52</sys_created_on>
+        <sys_id>31c0c1fd47132110acf69a21336d435d</sys_id>
+        <sys_mod_count>43</sys_mod_count>
+        <sys_name>QueryProductInventoryUtils</sys_name>
+        <sys_package display_value="OMTMT Query Product Inventory" source="x_648117_omtmt_qry">aaa6f8e547972110acf69a21336d434d</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="OMTMT Query Product Inventory">aaa6f8e547972110acf69a21336d434d</sys_scope>
+        <sys_update_name>sys_script_include_31c0c1fd47132110acf69a21336d435d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-09 00:34:54</sys_updated_on>
+    </sys_script_include>
+</record_update>

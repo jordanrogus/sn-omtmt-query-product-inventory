@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties_category_m2m">
+    <sys_properties_category_m2m action="INSERT_OR_UPDATE">
+        <category display_value="OMTMT Query Product Inventory">e5fa2e7d471b2110acf69a21336d43e0</category>
+        <order>100</order>
+        <property display_value="x_648117_omtmt_qry.enable" name="x_648117_omtmt_qry.enable">ba0bee7d471b2110acf69a21336d431a</property>
+        <sys_class_name>sys_properties_category_m2m</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-09 00:28:35</sys_created_on>
+        <sys_id>5b9b2abd471b2110acf69a21336d431a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_648117_omtmt_qry.enable.OMTMT Query Product Inventory</sys_name>
+        <sys_package display_value="OMTMT Query Product Inventory" source="x_648117_omtmt_qry">aaa6f8e547972110acf69a21336d434d</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="OMTMT Query Product Inventory">aaa6f8e547972110acf69a21336d434d</sys_scope>
+        <sys_update_name>sys_properties_category_m2m_5b9b2abd471b2110acf69a21336d431a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-09 00:28:35</sys_updated_on>
+    </sys_properties_category_m2m>
+</record_update>

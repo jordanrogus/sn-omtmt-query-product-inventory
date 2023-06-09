@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Enables or disables the query product inventory functionality</description>
+        <ignore_cache>true</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_648117_omtmt_qry.enable</name>
+        <read_roles>x_648117_omtmt_qry.viewer</read_roles>
+        <suffix>enable</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-09 00:27:18</sys_created_on>
+        <sys_id>ba0bee7d471b2110acf69a21336d431a</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>x_648117_omtmt_qry.enable</sys_name>
+        <sys_package display_value="OMTMT Query Product Inventory" source="x_648117_omtmt_qry">aaa6f8e547972110acf69a21336d434d</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="OMTMT Query Product Inventory">aaa6f8e547972110acf69a21336d434d</sys_scope>
+        <sys_update_name>sys_properties_ba0bee7d471b2110acf69a21336d431a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-09 00:28:12</sys_updated_on>
+        <type>boolean</type>
+        <value>true</value>
+        <write_roles>admin</write_roles>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=ba0bee7d471b2110acf69a21336d431a"/>
+</record_update>
