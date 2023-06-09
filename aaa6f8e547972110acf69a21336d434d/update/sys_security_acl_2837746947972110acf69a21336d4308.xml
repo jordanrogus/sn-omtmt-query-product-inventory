@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+    <sys_security_acl action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <admin_overrides>true</admin_overrides>
+        <advanced>false</advanced>
+        <condition/>
+        <description/>
+        <name>x_648117_omtmt_qry_query_product_inventory</name>
+        <operation display_value="read">read</operation>
+        <script/>
+        <sys_class_name>sys_security_acl</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-07 21:21:29</sys_created_on>
+        <sys_id>2837746947972110acf69a21336d4308</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_648117_omtmt_qry_query_product_inventory</sys_name>
+        <sys_package display_value="OMTMT Query Product Inventory" source="x_648117_omtmt_qry">aaa6f8e547972110acf69a21336d434d</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="OMTMT Query Product Inventory">aaa6f8e547972110acf69a21336d434d</sys_scope>
+        <sys_update_name>sys_security_acl_2837746947972110acf69a21336d4308</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-07 21:21:29</sys_updated_on>
+        <type display_value="ui_page">ui_page</type>
+    </sys_security_acl>
+</record_update>

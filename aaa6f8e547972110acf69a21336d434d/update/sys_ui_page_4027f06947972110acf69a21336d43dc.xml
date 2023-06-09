@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[// Runs when the Search button is clicked to show a tabular list of inventory records 
+function queryInv() {
+
+    // Clear contents of table/error msg so new data can populate on subsequent clicks
+    $j('#data_table').find('thead').empty();
+    $j('#data_table').find('tbody').empty();
+	$j('#no_data').empty();
+
+    // Get inputs
+    var gm = GlideModal.get();
+    var characteristic = gel('char').value;
+    var searchvalue = gel('searchvalue').value;
+    var account = gm.getPreference('sysparm_account_sys_id');
+
+    var ga = new GlideAjax('x_648117_omtmt_qry.QueryProductInventoryUtils');
+    ga.addParam('sysparm_name', 'retrieveInventoryInfo');
+    ga.addParam('sysparm_characteristic_sys_id', characteristic);
+    ga.addParam('sysparm_searchvalue', searchvalue);
+    ga.addParam('sysparm_account_sys_id', account);
+
+    ga.getXMLAnswer(retrieveInventoryInfo);
+}
+
+// Callback to populate table via jQuery with retrieved data
+function retrieveInventoryInfo(answer) {
+    if (answer) {
+
+        answer = answer.evalJSON();
+
+        if (answer.length == 0) {
+			$j('#no_data').append('<div>No product inventory records found per the supplied inputs. Please try again.</div>');
+        } else {
+            // Create table headers
+            $j('#data_head').append($j('<tr>')
+                .append($j('<td>').text('Name'))
+                .append($j('<td>').text('Specification'))
+                .append($j('<td>').text('Type'))
+                .append($j('<td>').text('State'))
+                .append($j('<td>').text('Location'))
+                .append($j('<td>').text('Account'))
+                .append($j('<td>').text('Offering'))
+                .append($j('<td>').text('Model'))
+                .append($j('<td>').text('Link'))
+                .append($j('<td>').text(''))
+                .append($j('</tr>'))
+            );
+
+            // Populate table rows
+            answer.forEach(function(row) {
+                $j('#data_body').append($j('<tr>')
+                    .append($j('<td>').text(row.name))
+                    .append($j('<td>').text(row.specification))
+                    .append($j('<td>').text(row.specification_class))
+                    .append($j('<td>').text(row.state))
+                    .append($j('<td>').text(row.location))
+                    .append($j('<td>').text(row.account))
+                    .append($j('<td>').text(row.product_offering))
+                    .append($j('<td>').text(row.model))
+                    .append($j('<td class="id hidden">').text(row.sys_id))
+                    .append($j('<td> <a href="' + row.link + '" title="Opens in new tab" target="_blank">Open</a></td>'))
+                    .append($j("<td> <button type='button' class='invsubmitbtn vert-aligned btn btn-success' title='Inserting will overwrite the exisiting sold product on the case'>Insert</button>"))
+                    .append($j('</tr>'))
+                );
+            });
+
+            // Find which row (product inventory) was clicked
+            $j('.invsubmitbtn').click(function() {
+                var inventory_sys_id = $j(this).closest('tr').find('.id').text();
+                insert(inventory_sys_id);
+            });
+        }
+    }
+}
+
+// Runs when the insert button is clicked by an inventory record to update the case record with the inventory
+function insert(inventory_sys_id) {
+
+    var gm = GlideModal.get();
+
+    var ga = new GlideAjax('x_648117_omtmt_qry.QueryProductInventoryUtils');
+    ga.addParam('sysparm_name', 'updateCase');
+    ga.addParam('sysparm_case_record_sys_id', gm.getPreference('sysparm_case_sys_id'));
+    ga.addParam('sysparm_inventory_sys_id', inventory_sys_id);
+
+    ga.getXMLAnswer(updateCase);
+}
+
+// Callback to close modal once case is updated
+function updateCase(answer) {
+    GlideModal.get().destroy();
+}]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint>x_648117_omtmt_qry_query_product_inventory.do</endpoint>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	
+	<!-- UI Setup -->
+	
+	<g:evaluate object="true" jelly="true">
+		var acctDisplay = '';
+		var acctFound = false;
+		var grAccount = new GlideRecordSecure('customer_account');
+		if(grAccount.get(RP.getWindowProperties().sysparm_account_sys_id)){
+			acctDisplay = grAccount.getDisplayValue();
+			acctFound = true;
+		}
+	</g:evaluate>
+		
+	<j:if test='${acctFound}' >
+		<div class="italic">Querying only product inventory associated to the ${acctDisplay} account because this account is associated to the case</div>
+	</j:if>
+	
+	<j:if test='${!acctFound}' >
+		<div class="italic">Querying product inventory against all accounts as no account specified in the case</div>
+	</j:if>
+	
+	<j:set var="jvar_pref" value="${sysparm_account_sys_id}"/>
+	
+	<!-- Inputs -->
+
+	<div class = "spacing">Choose characteristic to query against</div>
+	<g:ui_reference name="char" id="char" table="sn_prd_pm_characteristic"/>
+		
+	<div class = "spacing">Choose value to query against</div>
+	<textarea id="searchvalue" name="searchvalue" class="form-control" spellcheck="true" required="required" style="overflow: hidden; word-wrap: break-word; resize: none;" ></textarea>
+	
+	<button class="btn btn-primary spacing" id="ok_button" onclick="queryInv()" style="min-width: 5em;" title="" type="submit">Search</button>
+	
+	<!-- Sets up tabular skeleon to be populated via jQuery from the client script -->
+	
+	<table id="data_table" class="table table-hover table-striped">
+		<thead id="data_head"></thead>
+		<tbody id="data_body"></tbody>
+	</table>
+	
+	<!-- Sets up skeleton for error message to be populated via jQuery from the client script if needed -->
+	
+	<div id="no_data" class="no_data spacing italic"></div>
+		
+	<!-- Stylesheet -->
+	
+	<style>
+		.italic {font-style: italic;}
+		.spacing {margin-top: 10px;}
+		.hidden {display: none;}
+		.no_data {text-align: center; color: red;}
+	</style>
+	
+</j:jelly>]]></html>
+        <name>query_product_inventory</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2023-06-07 21:21:29</sys_created_on>
+        <sys_id>4027f06947972110acf69a21336d43dc</sys_id>
+        <sys_mod_count>170</sys_mod_count>
+        <sys_name>query_product_inventory</sys_name>
+        <sys_package display_value="OMTMT Query Product Inventory" source="x_648117_omtmt_qry">aaa6f8e547972110acf69a21336d434d</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="OMTMT Query Product Inventory">aaa6f8e547972110acf69a21336d434d</sys_scope>
+        <sys_update_name>sys_ui_page_4027f06947972110acf69a21336d43dc</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2023-06-09 15:15:26</sys_updated_on>
+    </sys_ui_page>
+</record_update>
